@@ -1,0 +1,12 @@
+<h5>Sale Listings</h5>
+<div class="row">
+    <div class="col-sm-12">
+        <sebm-google-map [latitude]="lat" [longitude]="lng">
+            <template ngFor let-saleListing [ngForOf]="saleListings" let-i="index">
+                <sebm-google-map-marker [latitude]="saleListing.latitude"
+                                        [longitude]="saleListing.longitude">
+                </sebm-google-map-marker>
+            </template>
+        </sebm-google-map>
+    </div>
+</div>

@@ -20,11 +20,7 @@ export class SaleListingService {
         this.apiDetailUrl = environment.api_endpoint + this.modelName
     }
 
-    getSaleListingsResponse(lat:number, lng:number):Observable<SaleListingsResponse> {
-
-        let params:URLSearchParams = new URLSearchParams();
-        params.set('lat', lat.toString());
-        params.set('lng', lng.toString());
+    getSaleListingsResponse(params:URLSearchParams):Observable<SaleListingsResponse> {
         return this.http.get(this.apiListUrl, {
             search: params
         })

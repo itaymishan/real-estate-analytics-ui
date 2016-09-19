@@ -1,10 +1,63 @@
-<h5>Sale Listings</h5>
+<div class="row">
+    <div class="col-sm-2">
+        <div class="btn-group" role="group">
+            <button type="button" class="btn btn-default" (click)="refresh()">Refresh</button>
+            <button type="button" class="btn btn-default" (click)="loadMore()">Load More</button>
+        </div>
+    </div>
+    <div class="col-sm-10">
+        <div class="panel panel-default">
+            <div class="panel-body" *ngIf="meta">
+                page: {{meta.page}}, count: {{meta.count}}, total: {{meta.total}}
+            </div>
+        </div>
+    </div>
+</div>
 <div class="row">
     <div class="col-sm-12">
-        <sebm-google-map [latitude]="lat" [longitude]="lng">
+        <sebm-google-map [latitude]="center_lat" [longitude]="center_lng" [zoomControl]="true"
+                         (centerChange)="centerChanged($event);">
             <template ngFor let-saleListing [ngForOf]="saleListings" let-i="index">
                 <sebm-google-map-marker [latitude]="saleListing.latitude"
-                                        [longitude]="saleListing.longitude">
+                                        [longitude]="saleListing.longitude"
+                                        [title]="saleListing.address">
+                    <sebm-google-map-info-window [disableAutoPan]="true">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="thumbnail">
+                                    <img *ngIf="saleListing &&
+                                    saleListing.raw_data &&
+                                    saleListing.raw_data.Property &&
+                                    saleListing.raw_data.Property.Photo &&
+                                    saleListing.raw_data.Property.Photo.length == 1"
+                                         width="180px"
+                                         height="171px"
+                                         src="{{saleListing.raw_data.Property.Photo[0].HighResPath}}">
+                                    <div class="caption">
+                                        <h3>{{ saleListing.address }}</h3>
+                                        <h5>MSL ID: {{saleListing.mls_id}}</h5>
+                                        <h5>Asking Price: {{saleListing.asking_price | currency:'CAD':true}}</h5>
+                                        <h5 *ngIf="saleListing.closing_price">Closing Price:
+                                            {{saleListing.closing_price}}</h5>
+                                        <h5 *ngIf="saleListing.num_of_stories">Number Of Stories:
+                                            {{saleListing.num_of_stories}}</h5>
+                                        <h5 *ngIf="saleListing.bedrooms">Bedrooms: {{saleListing.bedrooms}}</h5>
+                                        <h5 *ngIf="saleListing.washrooms">Washrooms: {{saleListing.washrooms}}</h5>
+                                        <h5 *ngIf="saleListing.kitchens">Kitchens: {{saleListing.kitchens}}</h5>
+                                        <h5 *ngIf="saleListing.basement_type">Basement Type:
+                                            {{saleListing.basement_type}}</h5>
+                                        <h5 *ngIf="saleListing.basement_rooms">Basement Rooms:
+                                            {{saleListing.basement_rooms}}</h5>
+                                        <h5 *ngIf="saleListing.basement_washrooms">Basement Washrooms:
+                                            {{saleListing.basement_washrooms}}</h5>
+                                        <h5 *ngIf="saleListing.basement_kitchens">Basement Kitchens:
+                                            {{saleListing.basement_kitchens}}</h5>
+                                        <p>Remarks: {{saleListing.remarks}}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </sebm-google-map-info-window>
                 </sebm-google-map-marker>
             </template>
         </sebm-google-map>

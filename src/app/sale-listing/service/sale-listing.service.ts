@@ -2,9 +2,10 @@ import {Injectable} from '@angular/core';
 import {Observable}     from 'rxjs/Observable';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/map'
-import {Http, Response} from '@angular/http';
+import {Http, Response, URLSearchParams} from '@angular/http';
 import {environment} from '../../../environments/environment';
 import {SaleListing} from '../model/sale-listing'
+import {SaleListingsResponse} from '../model/sale-listings-response'
 
 
 @Injectable()
@@ -17,6 +18,18 @@ export class SaleListingService {
     constructor(private http:Http) {
         this.apiListUrl = environment.api_endpoint + `${this.modelName}.json`;
         this.apiDetailUrl = environment.api_endpoint + this.modelName
+    }
+
+    getSaleListingsResponse(lat:number, lng:number):Observable<SaleListingsResponse> {
+
+        let params:URLSearchParams = new URLSearchParams();
+        params.set('lat', lat.toString());
+        params.set('lng', lng.toString());
+        return this.http.get(this.apiListUrl, {
+            search: params
+        })
+            .map(this.extractJsonResponse)
+            .catch(this.handleError);
     }
 
     getSaleListings():Observable<SaleListing[]> {
@@ -34,7 +47,7 @@ export class SaleListingService {
     private extractData(res:Response):Array<SaleListing> {
         let body = res.json();
         let response = new Array<SaleListing>();
-        for (var saleListingJson of body) {
+        for (var saleListingJson of body.sale_listings) {
             response.push(new SaleListing(saleListingJson))
         }
 
@@ -46,6 +59,10 @@ export class SaleListingService {
         return new SaleListing(body);
     }
 
+    private extractJsonResponse(res:Response):SaleListingsResponse {
+        let body = res.json();
+        return new SaleListingsResponse(body);
+    }
 
     private handleError(error:any) {
         // In a real world app, we might use a remote logging infrastructure
